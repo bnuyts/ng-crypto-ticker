@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300&display=swap");
+
+$max-size: 2rem;
+
+:host {
+  display: flex;
+  align-items: center;
+  max-height: $max-size;
+  font-family: "Source Code Pro", monospace;
+  justify-content: space-evenly;
+}
+
+.ticker__icon {
+  max-height: $max-size;
+
+  & img {
+    max-height: $max-size;
+  }
+}
