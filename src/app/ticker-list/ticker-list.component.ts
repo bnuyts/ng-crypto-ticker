@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TickerStoreService } from '../ticker-store.service';
+import { map } from 'rxjs/operators';
+import { TickerStoreService } from '../ticker-store/ticker-store.service';
 import { Ticker } from '../ticker/ticker.model';
 
 @Component({
@@ -9,11 +10,15 @@ import { Ticker } from '../ticker/ticker.model';
   styleUrls: ['./ticker-list.component.scss'],
 })
 export class TickerListComponent implements OnInit {
-  public ticker$?: Observable<Ticker>;
+  public tickers$?: Observable<Ticker[]>;
+  public lastUpdateEpoch$?: Observable<Date>;
 
-  constructor(private _tickerStore: TickerStoreService) {
-    this.ticker$ = this._tickerStore.tickerData;
+  constructor(private _tickerStore: TickerStoreService) {}
+
+  ngOnInit(): void {
+    this.tickers$ = this._tickerStore.tickers$;
+    this.lastUpdateEpoch$ = this._tickerStore.lastUpdateEpoch$.pipe(
+      map((epoch) => new Date(epoch))
+    );
   }
-
-  ngOnInit(): void {}
 }

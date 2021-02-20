@@ -3,11 +3,7 @@
 $max-size: 2rem;
 
 :host {
-  display: flex;
-  align-items: center;
-  max-height: $max-size;
   font-family: "Source Code Pro", monospace;
-  justify-content: space-evenly;
 }
 
 .ticker__icon {
