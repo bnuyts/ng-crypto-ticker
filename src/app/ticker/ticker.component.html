@@ -1,15 +1,9 @@
-<div class="ticker__icon">
-    <img [src]="ticker?.imageUrl" />
-</div>
-<div>
-    {{ticker?.symbol}}
-</div>
-<div>
-    {{ticker?.name}}
-</div
-><div>
-    {{ticker?.price}}
-</div>
-<div>
-    {{ diff }}
-</div>
+<td class="ticker__icon">
+  <img [src]="ticker?.imageUrl" />
+</td>
+<td>
+  {{ ticker?.symbol }}
+</td>
+<td>
+  {{ ticker?.price$ | async }}
+</td>

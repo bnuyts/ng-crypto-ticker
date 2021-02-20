@@ -1,6 +1,7 @@
+import { BehaviorSubject } from 'rxjs';
+
 export interface Ticker {
   imageUrl: string;
-  name: string;
   symbol: string;
-  price: number;
+  price$: BehaviorSubject<number>;
 }
