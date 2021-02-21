@@ -1,9 +1,14 @@
 <td class="ticker__icon">
-  <img [src]="ticker?.imageUrl" />
+  <img
+    [src]="ticker?.imageUrl"
+    onerror="this.onerror=null; this.src='/assets/icons/generic.svg'"
+  />
 </td>
 <td>
   {{ ticker?.symbol }}
 </td>
 <td>
   {{ ticker?.price$ | async }}
+  <ng-container *ngIf="change$ | async"> &uarr; </ng-container>
+  <ng-container *ngIf="!(change$ | async)"> &darr; </ng-container>
 </td>
