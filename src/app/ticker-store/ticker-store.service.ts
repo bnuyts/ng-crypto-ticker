@@ -40,30 +40,7 @@ export class TickerStoreService {
   public lastUpdateEpoch$: Observable<number> = this._lastUpdateEpoch.asObservable();
 
   constructor() {
-    const socket = webSocket<SocketMessage | MiniTicker>(
-      'wss://stream.binance.com:9443/ws'
-    );
-    socket.subscribe((output) => {
-      const miniTicker = output as MiniTicker;
-      if (miniTicker.s != null && miniTicker.c != null) {
-        this.updateTickerData({
-          symbol: miniTicker.s,
-          price: +miniTicker.c,
-        });
-        this._lastUpdateEpoch.next(miniTicker.E);
-      }
-    });
-
-    socket.next({
-      method: 'SUBSCRIBE',
-      params: [
-        'btcusdt@miniTicker',
-        'ethusdt@miniTicker',
-        'xrpusdt@miniTicker',
-        'zrxusdt@miniTicker',
-      ],
-      id: 1,
-    });
+    this._connectToSocket();
   }
 
   public updateTickerData(ticker: { symbol: string; price: number }) {
@@ -72,11 +49,46 @@ export class TickerStoreService {
       tickerData.price$.next(ticker.price);
     } else {
       this._tickerData.set(ticker.symbol, {
-        imageUrl: `${imageUrl}${ticker.symbol.substr(0, 3).toLowerCase()}.svg`,
+        imageUrl: `${imageUrl}${ticker.symbol
+          .replace('USDT', '')
+          .toLowerCase()}.svg`,
         price$: new BehaviorSubject(ticker.price),
         symbol: ticker.symbol,
       });
       this._tickers.next(Array.from(this._tickerData.values()));
     }
+  }
+
+  private _connectToSocket() {
+    const socket = webSocket<SocketMessage | MiniTicker>(
+      'wss://stream.binance.com:9443/ws'
+    );
+    socket.subscribe(
+      (output) => {
+        const miniTicker = output as MiniTicker;
+        if (miniTicker.s != null && miniTicker.c != null) {
+          this.updateTickerData({
+            symbol: miniTicker.s,
+            price: +miniTicker.c,
+          });
+          this._lastUpdateEpoch.next(miniTicker.E);
+        }
+      },
+      () => this._connectToSocket(),
+      () => this._connectToSocket()
+    );
+
+    socket.next({
+      method: 'SUBSCRIBE',
+      params: [
+        'btcusdt@miniTicker',
+        'ctsiusdt@miniTicker',
+        'ethusdt@miniTicker',
+        'ltcusdt@miniTicker',
+        'xrpusdt@miniTicker',
+        'zrxusdt@miniTicker',
+      ],
+      id: 1,
+    });
   }
 }
