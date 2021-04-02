@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { TickerStoreService } from '../services/ticker-store.service';
 
 @Component({
@@ -9,10 +9,14 @@ import { TickerStoreService } from '../services/ticker-store.service';
 })
 export class TickerAddFormComponent {
   public ticker = new FormControl();
+  public addTickerForm = new FormGroup({
+    ticker: this.ticker,
+  });
 
   constructor(private _tickerStore: TickerStoreService) {}
 
   add() {
     this._tickerStore.addTicker(this.ticker.value);
+    this.addTickerForm.reset();
   }
 }
