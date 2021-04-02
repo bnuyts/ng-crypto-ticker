@@ -1,0 +1,7 @@
+<h6>Currently tracking</h6>
+<ul>
+  <li *ngFor="let miniTicker of trackingList$ | async">
+    {{ miniTicker | tickerFormat }}
+    <i class="bi bi-trash" (click)="remove(miniTicker)"></i>
+  </li>
+</ul>

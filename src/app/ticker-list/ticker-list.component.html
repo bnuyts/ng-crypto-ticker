@@ -1,26 +1,28 @@
-<div class="shadow p-3 mb-5 bg-body rounded">
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col" class="col-1">Icon</th>
-        <th scope="col" class="col-3">Symbol</th>
-        <th scope="col" class="col-8">Price</th>
-      </tr>
-    </thead>
-    <tbody class="align-middle">
-      <tr
-        *ngFor="let ticker of tickers$ | async"
-        app-ticker
-        [ticker]="ticker"
-      ></tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3">
-          Last update:
-          {{ lastUpdateEpoch$ | async | date: "medium" }}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col" class="col-1">Icon</th>
+      <th scope="col" class="col-3">Symbol</th>
+      <th scope="col" class="col-4">Price</th>
+      <th scope="col" class="col-1">RSI (14)</th>
+      <th scope="col" class="col-2">EMA 5-13 Cross</th>
+      <th scope="col" class="col-1">Signal</th>
+    </tr>
+  </thead>
+  <tbody class="align-middle">
+    <tr
+      *ngFor="let ticker of tickers$ | async"
+      app-ticker
+      [ticker]="ticker"
+    ></tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="6">
+        Last update:
+        {{ lastUpdateEpoch$ | async | date: "medium" }}
+        | RSI and EMA measured in ticks
+      </td>
+    </tr>
+  </tfoot>
+</table>

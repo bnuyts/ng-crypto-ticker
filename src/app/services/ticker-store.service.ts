@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { webSocket } from 'rxjs/webSocket';
+import { filter } from 'rxjs/operators';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 
 import { Ticker } from '../ticker/ticker.model';
+import { MiniTickerStorageService } from './mini-ticker-storage.service';
 
 const imageUrl = 'assets/icons/';
 
@@ -28,19 +30,44 @@ interface MiniTicker {
   providedIn: 'root',
 })
 export class TickerStoreService {
+  private _lastUpdateEpoch: BehaviorSubject<number> = new BehaviorSubject<number>(
+    0
+  );
+  private _socket?: WebSocketSubject<SocketMessage | MiniTicker>;
   private _tickerData: Map<string, Ticker> = new Map<string, Ticker>();
   private _tickers: BehaviorSubject<Ticker[]> = new BehaviorSubject<Ticker[]>(
     []
-  );
-  private _lastUpdateEpoch: BehaviorSubject<number> = new BehaviorSubject<number>(
-    0
   );
 
   public tickers$: Observable<Ticker[]> = this._tickers.asObservable();
   public lastUpdateEpoch$: Observable<number> = this._lastUpdateEpoch.asObservable();
 
-  constructor() {
+  constructor(
+    private readonly miniTickerStorageService: MiniTickerStorageService
+  ) {
     this._connectToSocket();
+    this.miniTickerStorageService.miniTickerList$
+      .pipe(filter((list) => list.length > 0))
+      .subscribe((list) =>
+        this._socket?.next({
+          method: 'SUBSCRIBE',
+          params: list,
+          id: 1,
+        })
+      );
+    this.miniTickerStorageService.miniTickerRemovals$.subscribe(
+      (removedTicker) => {
+        this._socket?.next({
+          method: 'UNSUBSCRIBE',
+          params: [removedTicker],
+          id: 1,
+        });
+      }
+    );
+  }
+
+  public addTicker(ticker: string) {
+    this.miniTickerStorageService.add(ticker);
   }
 
   public updateTickerData(ticker: { symbol: string; price: number }) {
@@ -60,10 +87,12 @@ export class TickerStoreService {
   }
 
   private _connectToSocket() {
-    const socket = webSocket<SocketMessage | MiniTicker>(
+    this._socket?.unsubscribe();
+
+    this._socket = webSocket<SocketMessage | MiniTicker>(
       'wss://stream.binance.com:9443/ws'
     );
-    socket.subscribe(
+    this._socket.subscribe(
       (output) => {
         const miniTicker = output as MiniTicker;
         if (miniTicker.s != null && miniTicker.c != null) {
@@ -71,24 +100,13 @@ export class TickerStoreService {
             symbol: miniTicker.s,
             price: +miniTicker.c,
           });
-          this._lastUpdateEpoch.next(miniTicker.E);
+          if (miniTicker.E > this._lastUpdateEpoch.value) {
+            this._lastUpdateEpoch.next(miniTicker.E);
+          }
         }
       },
       () => this._connectToSocket(),
       () => this._connectToSocket()
     );
-
-    socket.next({
-      method: 'SUBSCRIBE',
-      params: [
-        'btcusdt@miniTicker',
-        'ctsiusdt@miniTicker',
-        'ethusdt@miniTicker',
-        'ltcusdt@miniTicker',
-        'xrpusdt@miniTicker',
-        'zrxusdt@miniTicker',
-      ],
-      id: 1,
-    });
   }
 }

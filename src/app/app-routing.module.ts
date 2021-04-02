@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TickerListComponent } from './ticker-list/ticker-list.component';
+import { LayoutComponent } from './layout/layout.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: TickerListComponent,
+    component: LayoutComponent,
   },
 ];
 

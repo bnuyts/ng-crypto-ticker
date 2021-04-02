@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { TickerStoreService } from '../ticker-store/ticker-store.service';
+import { filter, last, map } from 'rxjs/operators';
+import { TickerStoreService } from '../services/ticker-store.service';
 import { Ticker } from '../ticker/ticker.model';
 
 @Component({
