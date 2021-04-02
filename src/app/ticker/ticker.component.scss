@@ -4,6 +4,7 @@ $max-size: 2rem;
 
 :host {
   font-family: "Source Code Pro", monospace;
+  white-space: nowrap;
 }
 
 .ticker__icon {
