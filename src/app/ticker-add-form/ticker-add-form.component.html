@@ -1,0 +1,13 @@
+<form>
+  <h6>Add ticker</h6>
+  <div class="mb-3 input-group">
+    <input
+      type="text"
+      class="form-control"
+      id="tickerInput"
+      placeholder="Ticker example: BTCUSDT"
+      [formControl]="ticker"
+    />
+    <button type="button" class="btn btn-primary" (click)="add()">Add</button>
+  </div>
+</form>

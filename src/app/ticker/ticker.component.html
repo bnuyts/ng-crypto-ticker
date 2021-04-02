@@ -9,6 +9,26 @@
 </td>
 <td>
   {{ ticker?.price$ | async }}
-  <ng-container *ngIf="change$ | async"> &uarr; </ng-container>
-  <ng-container *ngIf="!(change$ | async)"> &darr; </ng-container>
+  <ng-container [ngSwitch]="state$ | async">
+    <ng-container *ngSwitchCase="State.UP">&uarr;</ng-container>
+    <ng-container *ngSwitchCase="State.DOWN">&darr;</ng-container>
+    <ng-container *ngSwitchCase="State.NOCHANGE">&#61;</ng-container>
+  </ng-container>
+</td>
+<td>
+  {{ rsi$ | async }}
+</td>
+<td>
+  <ng-container [ngSwitch]="emaCross$ | async">
+    <ng-container *ngSwitchCase="State.UP">&uarr;</ng-container>
+    <ng-container *ngSwitchCase="State.DOWN">&darr;</ng-container>
+    <ng-container *ngSwitchCase="State.NOCHANGE">&#61;</ng-container>
+  </ng-container>
+</td>
+<td>
+  <ng-container [ngSwitch]="signal$ | async">
+    <ng-container *ngSwitchCase="State.UP">&uarr;</ng-container>
+    <ng-container *ngSwitchCase="State.DOWN">&darr;</ng-container>
+    <ng-container *ngSwitchCase="State.NOCHANGE">&#61;</ng-container>
+  </ng-container>
 </td>

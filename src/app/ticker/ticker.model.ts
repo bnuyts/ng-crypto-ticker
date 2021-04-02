@@ -5,3 +5,9 @@ export interface Ticker {
   symbol: string;
   price$: BehaviorSubject<number>;
 }
+
+export enum TickerState {
+  UP,
+  DOWN,
+  NOCHANGE,
+}
