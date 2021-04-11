@@ -19,7 +19,7 @@
   {{ rsi$ | async }}
 </td>
 <td>
-  <ng-container [ngSwitch]="emaCross$ | async">
+  <ng-container [ngSwitch]="smaCross$ | async">
     <ng-container *ngSwitchCase="State.UP">&uarr;</ng-container>
     <ng-container *ngSwitchCase="State.DOWN">&darr;</ng-container>
     <ng-container *ngSwitchCase="State.NOCHANGE">&#61;</ng-container>
